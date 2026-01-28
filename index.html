@@ -1,117 +1,116 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Barbería de Jones</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Barbería de Jones</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="manifest.json">
 
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: url(pgn/jenes.jpg) no-repeat center center fixed;
-      background-size: cover;
-      color: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 10px;
-    }
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: url(pgn/jenes.jpg) no-repeat center center fixed;
+    background-size: cover;
+    color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+  }
 
-    a { color: #c59d5f; text-decoration: none; margin-bottom: 10px; font-weight: bold; font-size: 18px; }
-    .iconos { margin-bottom: 15px; font-size: 28px; }
-    .iconos a { margin-right: 15px; }
-    .card { background: #1c1c1caa; padding: 24px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,.6); margin-bottom: 20px; }
-    h1,h2{text-align:center;margin-bottom:10px;}
-    label{display:block;margin-top:12px;font-size:14px;}
-    input, select, button{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:none;font-size:14px;}
-    input, select{background:#2a2a2a;color:#f5f5f5;}
-    button{margin-top:10px;background:#c59d5f;color:#000;font-weight:bold;cursor:pointer;}
-    button:hover{background:#ddb26f;}
-    .success{margin-top:15px;color:#4caf50;text-align:center;display:none;}
-    .turno-item, .disponible-item{padding:10px;font-size:14px;margin-bottom:6px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;}
-    .disponible-item.libre{background:#4caf50;color:#000;}
-    .disponible-item.ocupado{background:#e53935;color:#fff;}
-    .btn-eliminar{background:#e53935;color:#fff;margin-left:10px;}
-    .turnos-list, .disponibles-list{background:#1c1c1caa;padding:24px;border-radius:12px;width:100%;max-width:420px;margin-bottom:20px;box-shadow:0 10px 25px rgba(0,0,0,.6);}
-    #loginCard{display:flex;flex-direction:column;align-items:center;}
-  </style>
+  a { color: #c59d5f; text-decoration: none; margin-bottom: 10px; font-weight: bold; font-size: 18px; }
+  .iconos { margin-bottom: 15px; font-size: 28px; }
+  .iconos a { margin-right: 15px; }
+  .card { background: #1c1c1caa; padding: 24px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,.6); margin-bottom: 20px; }
+  h1,h2{text-align:center;margin-bottom:10px;}
+  label{display:block;margin-top:12px;font-size:14px;}
+  input, select, button{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:none;font-size:14px;}
+  input, select{background:#2a2a2a;color:#f5f5f5;}
+  button{margin-top:10px;background:#c59d5f;color:#000;font-weight:bold;cursor:pointer;}
+  button:hover{background:#ddb26f;}
+  .success{margin-top:15px;color:#4caf50;text-align:center;display:none;}
+  .turno-item, .disponible-item{padding:10px;font-size:14px;margin-bottom:6px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+  .disponible-item.libre{background:#4caf50;color:#000;}
+  .disponible-item.ocupado{background:#e53935;color:#fff;cursor: not-allowed;}
+  .btn-eliminar{background:#e53935;color:#fff;margin-left:10px;}
+  .turnos-list, .disponibles-list{background:#1c1c1caa;padding:24px;border-radius:12px;width:100%;max-width:420px;margin-bottom:20px;box-shadow:0 10px 25px rgba(0,0,0,.6);}
+  #loginCard{display:flex;flex-direction:column;align-items:center;}
+</style>
 </head>
-
 <body>
 
-  <!-- Login -->
-  <div class="card" id="loginCard">
-    <h1>Ingresar</h1>
-    <label>Usuario:</label>
-    <input type="text" id="loginUser" placeholder="cliente/barbero">
-    <label>Contraseña:</label>
-    <input type="password" id="loginPass" placeholder="1234">
-    <button onclick="login()">Ingresar</button>
-    <div class="success" id="loginMsg"></div>
+<!-- Login -->
+<div class="card" id="loginCard">
+  <h1>Ingresar</h1>
+  <label>Usuario:</label>
+  <input type="text" id="loginUser" placeholder="cliente/barbero">
+  <label>Contraseña:</label>
+  <input type="password" id="loginPass" placeholder="1234">
+  <button onclick="login()">Ingresar</button>
+  <div class="success" id="loginMsg"></div>
+</div>
+
+<!-- Cliente -->
+<div id="clienteView" style="display:none; width:100%;">
+  <a href="#" onclick="logout()">⬅ Cerrar sesión</a>
+  <div class="turnos-list">
+    <h2>Turnos Disponibles</h2>
+    <label>Selecciona una fecha:</label>
+    <input type="date" id="fechaDisponibleCliente">
+    <div id="disponiblesCliente"></div>
   </div>
 
-  <!-- Cliente -->
-  <div id="clienteView" style="display:none; width:100%;">
-    <a href="#" onclick="logout()">⬅ Cerrar sesión</a>
-    <div class="turnos-list">
-      <h2>Turnos Disponibles</h2>
-      <label>Selecciona una fecha:</label>
-      <input type="date" id="fechaDisponibleCliente">
-      <div id="disponiblesCliente"></div>
-    </div>
-
-    <div class="card">
-      <h2>Reservar Turno</h2>
-      <form id="turnoForm">
-        <label>Nombre</label>
-        <input type="text" id="nombre" required>
-        <label>Teléfono / WhatsApp</label>
-        <input type="tel" id="telefono" placeholder="595981123456" required>
-        <label>Servicio</label>
-        <select id="servicio" required>
-          <option value="">Seleccionar</option>
-          <option>Corte clásico</option>
-          <option>Fade</option>
-          <option>Barba</option>
-          <option>Corte + Barba</option>
-          <option>Corte + Barba + Ceja</option>
-        </select>
-        <label>Fecha</label>
-        <input type="date" id="fecha" required>
-        <label>Horario</label>
-        <select id="hora" required>
-          <option value="">Seleccionar</option>
-          <option>07:00</option>
-          <option>08:00</option>
-          <option>09:00</option>
-          <option>10:00</option>
-          <option>11:00</option>
-          <option>13:00</option>
-          <option>14:00</option>
-          <option>15:00</option>
-          <option>16:00</option>
-          <option>17:00</option>
-          <option>18:00</option>
-          <option>19:00</option>
-          <option>20:00</option>
-        </select>
-        <button type="submit">Agendar turno</button>
-      </form>
-      <div class="success" id="successMsg">✅ Turno agendado correctamente</div>
-    </div>
+  <div class="card">
+    <h2>Reservar Turno</h2>
+    <form id="turnoForm">
+      <label>Nombre</label>
+      <input type="text" id="nombre" required>
+      <label>Teléfono / WhatsApp</label>
+      <input type="tel" id="telefono" placeholder="595981123456" required>
+      <label>Servicio</label>
+      <select id="servicio" required>
+        <option value="">Seleccionar</option>
+        <option>Corte clásico</option>
+        <option>Fade</option>
+        <option>Barba</option>
+        <option>Corte + Barba</option>
+        <option>Corte + Barba + Ceja</option>
+      </select>
+      <label>Fecha</label>
+      <input type="date" id="fecha" required>
+      <label>Horario</label>
+      <select id="hora" required>
+        <option value="">Seleccionar</option>
+        <option>07:00</option>
+        <option>08:00</option>
+        <option>09:00</option>
+        <option>10:00</option>
+        <option>11:00</option>
+        <option>13:00</option>
+        <option>14:00</option>
+        <option>15:00</option>
+        <option>16:00</option>
+        <option>17:00</option>
+        <option>18:00</option>
+        <option>19:00</option>
+        <option>20:00</option>
+      </select>
+      <button type="submit">Agendar turno</button>
+    </form>
+    <div class="success" id="successMsg">✅ Turno agendado correctamente</div>
   </div>
+</div>
 
-  <!-- Barbero -->
-  <div id="barberoView" style="display:none; width:100%;">
-    <a href="#" onclick="logout()">⬅ Cerrar sesión</a>
-    <div class="turnos-list">
-      <h2>Turnos Agendados</h2>
-      <div id="listaBarbero"></div>
-    </div>
+<!-- Barbero -->
+<div id="barberoView" style="display:none; width:100%;">
+  <a href="#" onclick="logout()">⬅ Cerrar sesión</a>
+  <div class="turnos-list">
+    <h2>Turnos Agendados</h2>
+    <div id="listaBarbero"></div>
   </div>
+</div>
 
 <script>
   // Usuarios simples
@@ -170,14 +169,20 @@
 
   form.addEventListener('submit',function(e){
     e.preventDefault();
-    const turnoExistente = turnos.find(t=>t.fecha===fecha.value && t.hora===hora.value);
+    agendarTurno(fecha.value,hora.value);
+  });
+
+  function agendarTurno(fechaVal,horaVal){
+    // Validar turno ocupado
+    const turnoExistente = turnos.find(t=>t.fecha===fechaVal && t.hora===horaVal);
     if(turnoExistente){ alert("❌ Este horario ya está ocupado, elige otro."); return; }
+
     const nuevoTurno={
       nombre:nombre.value,
       telefono:telefono.value.replace(/\D/g,''),
       servicio:servicio.value,
-      fecha:fecha.value,
-      hora:hora.value
+      fecha:fechaVal,
+      hora:horaVal
     };
     turnos.push(nuevoTurno);
     localStorage.setItem('turnos',JSON.stringify(turnos));
@@ -186,8 +191,9 @@
     form.reset();
     mostrarDisponiblesCliente();
     mostrarTurnosBarbero();
-  });
+  }
 
+  // Mostrar turnos disponibles con cuadritos clickeables
   function mostrarDisponiblesCliente(){
     const fechaSel = fechaDisponibleCliente.value;
     if(!fechaSel){ disponiblesCliente.innerHTML='<p>Selecciona una fecha</p>'; return; }
@@ -197,12 +203,21 @@
       const div = document.createElement('div');
       div.className='disponible-item '+(turnosDia.includes(h)?'ocupado':'libre');
       div.textContent=h;
+      if(!turnosDia.includes(h)){ 
+        div.addEventListener('click', ()=>{
+          // Poner datos del formulario automáticamente
+          fecha.value = fechaSel;
+          hora.value = h;
+          agendarTurno(fechaSel,h);
+        });
+      }
       disponiblesCliente.appendChild(div);
     });
   }
 
   fechaDisponibleCliente.addEventListener('change',mostrarDisponiblesCliente);
 
+  // Turnos barbero
   function mostrarTurnosBarbero(){
     if(turnos.length===0){ listaBarbero.innerHTML='<p>No hay turnos</p>'; return; }
     listaBarbero.innerHTML='';
