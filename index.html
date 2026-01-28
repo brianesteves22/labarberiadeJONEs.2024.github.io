@@ -4,11 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>La Barbería de Jones</title>
-
-  <!-- Font Awesome para íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Manifest para PWA -->
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -24,271 +20,218 @@
       padding: 10px;
     }
 
-    a {
-      color: #c59d5f;
-      text-decoration: none;
-      margin-bottom: 10px;
-      font-weight: bold;
-      font-size: 18px;
-    }
-
-    .iconos {
-      margin-bottom: 15px;
-      font-size: 28px;
-    }
-    .iconos a {
-      margin-right: 15px;
-    }
-
-    .card, .turnos-list, .disponibles-list {
-      background: #1c1c1caa;
-      padding: 24px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-      margin-bottom: 20px;
-    }
-
-    h1, h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    label {
-      display: block;
-      margin-top: 12px;
-      font-size: 14px;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
-
-    input, select {
-      background: #2a2a2a;
-      color: #f5f5f5;
-    }
-
-    button {
-      margin-top: 10px;
-      background: #c59d5f;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #ddb26f;
-    }
-
-    .success {
-      margin-top: 15px;
-      color: #4caf50;
-      text-align: center;
-      display: none;
-    }
-
-    .turno-item, .disponible-item {
-      padding: 10px;
-      border-bottom: 1px solid #333;
-      font-size: 14px;
-    }
-
-    .turno-item:last-child,
-    .disponible-item:last-child {
-      border-bottom: none;
-    }
-
-    .disponible-item {
-      color: #4caf50;
-      font-weight: bold;
-    }
-
-    .btn-eliminar {
-      background: #e53935;
-      color: #fff;
-      margin-top: 5px;
-    }
+    a { color: #c59d5f; text-decoration: none; margin-bottom: 10px; font-weight: bold; font-size: 18px; }
+    .iconos { margin-bottom: 15px; font-size: 28px; }
+    .iconos a { margin-right: 15px; }
+    .card { background: #1c1c1caa; padding: 24px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,.6); margin-bottom: 20px; }
+    h1,h2{text-align:center;margin-bottom:10px;}
+    label{display:block;margin-top:12px;font-size:14px;}
+    input, select, button{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:none;font-size:14px;}
+    input, select{background:#2a2a2a;color:#f5f5f5;}
+    button{margin-top:10px;background:#c59d5f;color:#000;font-weight:bold;cursor:pointer;}
+    button:hover{background:#ddb26f;}
+    .success{margin-top:15px;color:#4caf50;text-align:center;display:none;}
+    .turno-item, .disponible-item{padding:10px;font-size:14px;margin-bottom:6px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;}
+    .disponible-item.libre{background:#4caf50;color:#000;}
+    .disponible-item.ocupado{background:#e53935;color:#fff;}
+    .btn-eliminar{background:#e53935;color:#fff;margin-left:10px;}
+    .turnos-list, .disponibles-list{background:#1c1c1caa;padding:24px;border-radius:12px;width:100%;max-width:420px;margin-bottom:20px;box-shadow:0 10px 25px rgba(0,0,0,.6);}
+    #loginCard{display:flex;flex-direction:column;align-items:center;}
   </style>
 </head>
 
 <body>
 
-  <!-- Enlace volver -->
-  <a href="index.html">⬅ Volver</a>
-
-  <!-- Íconos sociales -->
-  <div class="iconos">
-    <a href="https://wa.me/595XXXXXXXXX" target="_blank">
-      <i class="fab fa-whatsapp" style="color:#25D366;"></i>
-    </a>
-    <a href="https://instagram.com/tu_barberia" target="_blank">
-      <i class="fab fa-instagram" style="color:#E1306C;"></i>
-    </a>
+  <!-- Login -->
+  <div class="card" id="loginCard">
+    <h1>Ingresar</h1>
+    <label>Usuario:</label>
+    <input type="text" id="loginUser" placeholder="cliente/barbero">
+    <label>Contraseña:</label>
+    <input type="password" id="loginPass" placeholder="1234">
+    <button onclick="login()">Ingresar</button>
+    <div class="success" id="loginMsg"></div>
   </div>
 
-  <!-- Formulario de turnos -->
-  <div class="card">
-    <h1>Reservar Turno</h1>
+  <!-- Cliente -->
+  <div id="clienteView" style="display:none; width:100%;">
+    <a href="#" onclick="logout()">⬅ Cerrar sesión</a>
+    <div class="turnos-list">
+      <h2>Turnos Disponibles</h2>
+      <label>Selecciona una fecha:</label>
+      <input type="date" id="fechaDisponibleCliente">
+      <div id="disponiblesCliente"></div>
+    </div>
 
-    <form id="turnoForm">
-      <label>Nombre</label>
-      <input type="text" id="nombre" required>
-
-      <label>Teléfono / WhatsApp</label>
-      <input type="tel" id="telefono" placeholder="595981123456" required>
-
-      <label>Servicio</label>
-      <select id="servicio" required>
-        <option value="">Seleccionar</option>
-        <option>Corte clásico</option>
-        <option>Fade</option>
-        <option>Barba</option>
-        <option>Corte + Barba</option>
-        <option>Corte + Barba + Ceja</option>
-      </select>
-
-      <label>Fecha</label>
-      <input type="date" id="fecha" required>
-
-      <label>Horario</label>
-      <select id="hora" required>
-        <option value="">Seleccionar</option>
-        <option>07:00</option>
-        <option>08:00</option>
-        <option>09:00</option>
-        <option>10:00</option>
-        <option>11:00</option>
-        <option>13:00</option>
-        <option>14:00</option>
-        <option>15:00</option>
-        <option>16:00</option>
-        <option>17:00</option>
-        <option>18:00</option>
-        <option>19:00</option>
-        <option>20:00</option>
-      </select>
-
-      <button type="submit">Agendar turno</button>
-    </form>
-
-    <div class="success" id="successMsg">✅ Turno agendado correctamente</div>
+    <div class="card">
+      <h2>Reservar Turno</h2>
+      <form id="turnoForm">
+        <label>Nombre</label>
+        <input type="text" id="nombre" required>
+        <label>Teléfono / WhatsApp</label>
+        <input type="tel" id="telefono" placeholder="595981123456" required>
+        <label>Servicio</label>
+        <select id="servicio" required>
+          <option value="">Seleccionar</option>
+          <option>Corte clásico</option>
+          <option>Fade</option>
+          <option>Barba</option>
+          <option>Corte + Barba</option>
+          <option>Corte + Barba + Ceja</option>
+        </select>
+        <label>Fecha</label>
+        <input type="date" id="fecha" required>
+        <label>Horario</label>
+        <select id="hora" required>
+          <option value="">Seleccionar</option>
+          <option>07:00</option>
+          <option>08:00</option>
+          <option>09:00</option>
+          <option>10:00</option>
+          <option>11:00</option>
+          <option>13:00</option>
+          <option>14:00</option>
+          <option>15:00</option>
+          <option>16:00</option>
+          <option>17:00</option>
+          <option>18:00</option>
+          <option>19:00</option>
+          <option>20:00</option>
+        </select>
+        <button type="submit">Agendar turno</button>
+      </form>
+      <div class="success" id="successMsg">✅ Turno agendado correctamente</div>
+    </div>
   </div>
 
-  <!-- Turnos agendados -->
-  <div class="turnos-list">
-    <h2>Turnos Agendados</h2>
-    <div id="lista"></div>
+  <!-- Barbero -->
+  <div id="barberoView" style="display:none; width:100%;">
+    <a href="#" onclick="logout()">⬅ Cerrar sesión</a>
+    <div class="turnos-list">
+      <h2>Turnos Agendados</h2>
+      <div id="listaBarbero"></div>
+    </div>
   </div>
 
-  <!-- Horarios disponibles -->
-  <div class="disponibles-list">
-    <h2>Turnos Disponibles</h2>
-    <label>Selecciona una fecha:</label>
-    <input type="date" id="fechaDisponible">
-    <div id="disponibles"></div>
-  </div>
+<script>
+  // Usuarios simples
+  const usuarios = [
+    {user:'cliente', pass:'1234', rol:'cliente'},
+    {user:'barbero', pass:'1234', rol:'barbero'}
+  ];
 
-  <script>
-    // Elementos DOM
-    const form = document.getElementById('turnoForm');
-    const nombre = document.getElementById('nombre');
-    const telefono = document.getElementById('telefono');
-    const servicio = document.getElementById('servicio');
-    const fecha = document.getElementById('fecha');
-    const hora = document.getElementById('hora');
-    const successMsg = document.getElementById('successMsg');
-    const lista = document.getElementById('lista');
+  function login(){
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    const msg = document.getElementById('loginMsg');
 
-    const fechaDisponible = document.getElementById('fechaDisponible');
-    const disponiblesDiv = document.getElementById('disponibles');
-
-    const horarios = ["07:00","08:00","09:00","10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"];
-
-    // Limitar fecha mínima
-    const today = new Date().toISOString().split('T')[0];
-    fecha.setAttribute('min', today);
-    fechaDisponible.setAttribute('min', today);
-
-    // Cargar turnos desde localStorage
-    let turnos = JSON.parse(localStorage.getItem('turnos')) || [];
-    mostrarTurnos();
-    mostrarDisponibles();
-
-    // Manejo de formulario
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-
-      // Validar turno ocupado
-      const turnoExistente = turnos.find(t => t.fecha === fecha.value && t.hora === hora.value);
-      if(turnoExistente){
-        alert("❌ Este horario ya está ocupado, elige otro.");
-        return;
+    const user = usuarios.find(x=>x.user===u && x.pass===p);
+    if(user){
+      document.getElementById('loginCard').style.display='none';
+      if(user.rol==='cliente'){
+        document.getElementById('clienteView').style.display='block';
+        mostrarDisponiblesCliente();
+      } else {
+        document.getElementById('barberoView').style.display='block';
+        mostrarTurnosBarbero();
       }
+      msg.style.display='none';
+    } else {
+      msg.style.display='block';
+      msg.textContent='❌ Usuario o contraseña incorrectos';
+    }
+  }
 
-      // Crear nuevo turno
-      const nuevoTurno = {
-        nombre: nombre.value,
-        telefono: telefono.value.replace(/\D/g,''), // solo números
-        servicio: servicio.value,
-        fecha: fecha.value,
-        hora: hora.value
-      };
+  function logout(){
+    document.getElementById('loginCard').style.display='block';
+    document.getElementById('clienteView').style.display='none';
+    document.getElementById('barberoView').style.display='none';
+  }
 
-      turnos.push(nuevoTurno);
-      localStorage.setItem('turnos', JSON.stringify(turnos));
+  const form = document.getElementById('turnoForm');
+  const nombre = document.getElementById('nombre');
+  const telefono = document.getElementById('telefono');
+  const servicio = document.getElementById('servicio');
+  const fecha = document.getElementById('fecha');
+  const hora = document.getElementById('hora');
+  const successMsg = document.getElementById('successMsg');
 
-      successMsg.style.display = 'block';
-      setTimeout(() => successMsg.style.display = 'none', 3000);
+  const fechaDisponibleCliente = document.getElementById('fechaDisponibleCliente');
+  const disponiblesCliente = document.getElementById('disponiblesCliente');
 
-      form.reset();
-      mostrarTurnos();
-      mostrarDisponibles();
+  const listaBarbero = document.getElementById('listaBarbero');
+
+  const horarios = ["07:00","08:00","09:00","10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"];
+  const today = new Date().toISOString().split('T')[0];
+  fecha.setAttribute('min',today);
+  fechaDisponibleCliente.setAttribute('min',today);
+
+  let turnos = JSON.parse(localStorage.getItem('turnos')) || [];
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    const turnoExistente = turnos.find(t=>t.fecha===fecha.value && t.hora===hora.value);
+    if(turnoExistente){ alert("❌ Este horario ya está ocupado, elige otro."); return; }
+    const nuevoTurno={
+      nombre:nombre.value,
+      telefono:telefono.value.replace(/\D/g,''),
+      servicio:servicio.value,
+      fecha:fecha.value,
+      hora:hora.value
+    };
+    turnos.push(nuevoTurno);
+    localStorage.setItem('turnos',JSON.stringify(turnos));
+    successMsg.style.display='block';
+    setTimeout(()=>successMsg.style.display='none',3000);
+    form.reset();
+    mostrarDisponiblesCliente();
+    mostrarTurnosBarbero();
+  });
+
+  function mostrarDisponiblesCliente(){
+    const fechaSel = fechaDisponibleCliente.value;
+    if(!fechaSel){ disponiblesCliente.innerHTML='<p>Selecciona una fecha</p>'; return; }
+    const turnosDia = turnos.filter(t=>t.fecha===fechaSel).map(t=>t.hora);
+    disponiblesCliente.innerHTML='';
+    horarios.forEach(h=>{
+      const div = document.createElement('div');
+      div.className='disponible-item '+(turnosDia.includes(h)?'ocupado':'libre');
+      div.textContent=h;
+      disponiblesCliente.appendChild(div);
     });
+  }
 
-    // Mostrar turnos
-    function mostrarTurnos(){
-      if(turnos.length === 0){
-        lista.innerHTML = '<p>No hay turnos agendados</p>';
-        return;
-      }
+  fechaDisponibleCliente.addEventListener('change',mostrarDisponiblesCliente);
 
-      lista.innerHTML = '';
-      turnos.forEach((t,index)=>{
-        const div = document.createElement('div');
-        div.className = 'turno-item';
-        div.innerHTML = `
-          <strong>${t.nombre}</strong> - ${t.servicio}<br>
-          Fecha: ${t.fecha} | Hora: ${t.hora}<br>
-          Tel: ${t.telefono}<br><br>
+  function mostrarTurnosBarbero(){
+    if(turnos.length===0){ listaBarbero.innerHTML='<p>No hay turnos</p>'; return; }
+    listaBarbero.innerHTML='';
+    turnos.forEach((t,i)=>{
+      const div=document.createElement('div');
+      div.className='turno-item';
+      div.innerHTML=`
+        <strong>${t.nombre}</strong> - ${t.servicio}<br>
+        Fecha: ${t.fecha} | Hora: ${t.hora}<br>
+        Tel: ${t.telefono}
+        <button onclick="enviarWhatsApp(${i})">📲 Recordatorio</button>
+        <button class="btn-eliminar" onclick="eliminarTurno(${i})">✅ Atendido</button>
+      `;
+      listaBarbero.appendChild(div);
+    });
+  }
 
-          <button onclick="enviarWhatsApp(${index})">📲 Recordatorio</button>
-          <button class="btn-eliminar" onclick="eliminarTurno(${index})">✅ Atendido</button>
-        `;
-        lista.appendChild(div);
-      });
+  function eliminarTurno(index){
+    if(confirm("¿Marcar este turno como atendido?")){
+      turnos.splice(index,1);
+      localStorage.setItem('turnos',JSON.stringify(turnos));
+      mostrarDisponiblesCliente();
+      mostrarTurnosBarbero();
     }
+  }
 
-    // Eliminar turno
-    function eliminarTurno(index){
-      if(confirm("¿Marcar este turno como atendido?")){
-        turnos.splice(index,1);
-        localStorage.setItem('turnos', JSON.stringify(turnos));
-        mostrarTurnos();
-        mostrarDisponibles();
-      }
-    }
-
-    // Enviar recordatorio WhatsApp
-    function enviarWhatsApp(index){
-      const t = turnos[index];
-      const mensaje = `Hola ${t.nombre} 👋
+  function enviarWhatsApp(index){
+    const t = turnos[index];
+    const mensaje=`Hola ${t.nombre} 👋
 Te recordamos tu turno en *La Barbería de Jones* 💈
 
 📅 Fecha: ${t.fecha}
@@ -296,38 +239,10 @@ Te recordamos tu turno en *La Barbería de Jones* 💈
 ✂ Servicio: ${t.servicio}
 
 ¡Te esperamos!`;
+    const url=`https://wa.me/595${t.telefono}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url,'_blank');
+  }
 
-      const url = `https://wa.me/595${t.telefono}?text=${encodeURIComponent(mensaje)}`;
-      window.open(url,'_blank');
-    }
-
-    // Mostrar turnos disponibles
-    function mostrarDisponibles(){
-      const fechaSel = fechaDisponible.value;
-      if(!fechaSel){
-        disponiblesDiv.innerHTML = '<p>Selecciona una fecha para ver los turnos disponibles</p>';
-        return;
-      }
-
-      const turnosDia = turnos.filter(t => t.fecha === fechaSel).map(t => t.hora);
-      const horariosDisponibles = horarios.filter(h => !turnosDia.includes(h));
-
-      if(horariosDisponibles.length === 0){
-        disponiblesDiv.innerHTML = '<p>Todos los turnos de esta fecha están ocupados</p>';
-        return;
-      }
-
-      disponiblesDiv.innerHTML = '';
-      horariosDisponibles.forEach(h=>{
-        const div = document.createElement('div');
-        div.className = 'disponible-item';
-        div.textContent = h;
-        disponiblesDiv.appendChild(div);
-      });
-    }
-
-    fechaDisponible.addEventListener('change', mostrarDisponibles);
-  </script>
-
+</script>
 </body>
 </html>
